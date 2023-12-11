@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  apache_php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./html:/var/www/html
+    ports:
+      - "80:80"
+    depends_on:
+      - mysql
+    restart: always
+
+  mysql:
+    container_name: mysql_android
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: QuickChat()
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: always
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql_android
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      - mysql
+    restart: always
+  
+  node_api:
+    build:
+      dockerfile: Dockerfile.node # Create a Dockerfile for your Node.js app
+    #command: npm run dev
+    #command: npm run dev
+    ports:
+      - "3000:3000" # Adjust the port as per your Node.js API setup
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: QuickChat
+    depends_on:
+      - mysql
+    volumes:
+      - ./quickchat_api/index.js/:/usr/src/app/index.js
+    restart: always
+
+volumes:
+  mysql_data:

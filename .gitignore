@@ -1,0 +1,4 @@
+*.pem
+/html
+/QuickChat
+/quickchat_api/node_modules

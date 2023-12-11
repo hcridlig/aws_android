@@ -1,0 +1,24 @@
+# Use the official Node.js 14 image as base
+FROM node
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json to the container
+COPY quickchat_api/package.json ./
+
+# Install dependencies
+RUN npm install
+RUN npm install mysql2
+
+
+# Bundle your source code into the container
+COPY quickchat_api/index.js .
+
+# Expose the port your app runs on (adjust if your app uses a different port)
+EXPOSE 3000
+
+# Command to run your Node.js application
+# Replace "app.js" with your entry file
+CMD ["npm", "run", "dev"]  
+
